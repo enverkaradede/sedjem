@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Sedjem palette: lapis lazuli night with Egyptian gold. */
+@theme {
+  --color-lapis-950: #050b1f;
+  --color-lapis-900: #08132f;
+  --color-lapis-850: #0b1a3e;
+  --color-lapis-800: #0f2250;
+  --color-lapis-700: #173275;
+  --color-lapis-600: #22479c;
+  --color-lapis-500: #3461c4;
+  --color-lapis-400: #5a85e0;
+  --color-lapis-300: #8eaef0;
+  --color-gold-200: #fbe7a6;
+  --color-gold-300: #f2d283;
+  --color-gold-400: #e2b656;
+  --color-gold-500: #c99a3a;
+  --color-gold-600: #a37a26;
+  --color-ink-50: #eef1f8;
+  --color-ink-200: #c4cbe0;
+  --color-ink-400: #8a94b3;
+  --color-ink-500: #6b7596;
+  --color-rose-glow: #ff6b6b;
+  --color-jade: #5fd4a0;
+
+  --font-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* The panel window is transparent: only the button is painted. */
+html[data-window="panel"],
+html[data-window="panel"] body {
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+html[data-window="settings"] body {
+  background: var(--color-lapis-950);
+  color: var(--color-ink-50);
+}
+
+/* Thin, quiet scrollbars in the settings content pane. */
+.scroll-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-ink-500) 45%, transparent) transparent;
+}
+
+@keyframes bar-wobble {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

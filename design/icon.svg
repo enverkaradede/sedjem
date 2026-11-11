@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1A3A86"/>
+      <stop offset="1" stop-color="#07122E"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.58" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#4C7BEA" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#4C7BEA" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FBE7A6"/>
+      <stop offset="0.55" stop-color="#E2B656"/>
+      <stop offset="1" stop-color="#B9832A"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#glow)"/>
+  <rect x="101.5" y="101.5" width="821" height="821" rx="184.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="3"/>
+  <g fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M548 292 C 676 292 748 384 748 486 C 748 566 700 610 664 648 C 628 686 644 736 596 768 C 548 800 486 784 470 732" stroke-width="58"/>
+    <path d="M506 478 C 506 418 548 386 590 386 C 642 386 672 428 672 478 C 672 530 622 544 610 586" stroke-width="46"/>
+    <path d="M404 432 C 378 462 378 528 404 558" stroke-width="40" opacity="0.95"/>
+    <path d="M326 382 C 280 438 280 552 326 608" stroke-width="38" opacity="0.7"/>
+    <path d="M250 332 C 184 414 184 576 250 658" stroke-width="36" opacity="0.45"/>
+  </g>
+</svg>
