@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { acceleratorFromKeys, formatAccelerator, type KeyInput } from "./accelerator";
+import { acceleratorFromKeys, formatAccelerator, usesControlKey, type KeyInput } from "./accelerator";
 
 const key = (code: string, mods: Partial<KeyInput> = {}): KeyInput => ({
   code,
@@ -46,5 +46,17 @@ describe("formatAccelerator", () => {
     expect(formatAccelerator("Super+Control+Shift+KeyD")).toEqual(["⌘", "⌃", "⇧", "D"]);
     expect(formatAccelerator("CmdOrCtrl+Digit1")).toEqual(["⌘", "1"]);
     expect(formatAccelerator("Alt+ArrowUp")).toEqual(["⌥", "↑"]);
+  });
+});
+
+describe("usesControlKey", () => {
+  it("detects the physical Control key", () => {
+    expect(usesControlKey("Control+Space")).toBe(true);
+    expect(usesControlKey("Super+Ctrl+KeyK")).toBe(true);
+  });
+
+  it("ignores CmdOrCtrl, which is Command on macOS", () => {
+    expect(usesControlKey("CmdOrCtrl+Shift+Space")).toBe(false);
+    expect(usesControlKey("Alt+Space")).toBe(false);
   });
 });

@@ -44,6 +44,33 @@ body,
   margin: 0;
 }
 
+/*
+ * Native feel: a desktop app is not a web page. No text selection, an arrow
+ * cursor, no dragging of icons, no rubber-band scrolling. Only real editing
+ * surfaces keep selection so copy/paste inside fields still works.
+ */
+html,
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  overscroll-behavior: none;
+}
+
+img,
+svg,
+a {
+  -webkit-user-drag: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
 /* The panel window is transparent: only the button is painted. */
 html[data-window="panel"],
 html[data-window="panel"] body {

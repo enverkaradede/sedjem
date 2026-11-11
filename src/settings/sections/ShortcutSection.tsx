@@ -1,8 +1,8 @@
-import { Hand, Keyboard, MousePointerClick } from "lucide-react";
+import { Hand, Info, Keyboard, MousePointerClick } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
-import { acceleratorFromKeys, formatAccelerator } from "../../lib/accelerator";
+import { acceleratorFromKeys, formatAccelerator, usesControlKey } from "../../lib/accelerator";
 import type { Settings } from "../../lib/types";
 import { Card, Kbd, Row, SectionHeader, Toggle } from "../ui";
 import type { UpdateSettings } from "../useSettings";
@@ -24,6 +24,9 @@ export function ShortcutSection({ settings, update }: { settings: Settings; upda
               onChange={(accelerator) => void update((d) => void (d.shortcut.accelerator = accelerator))}
             />
           </Row>
+          <AnimatePresence initial={false}>
+            {shortcut.enabled && usesControlKey(shortcut.accelerator) && <ControlKeyNote />}
+          </AnimatePresence>
         </Card>
 
         <div className="grid grid-cols-2 gap-4">
@@ -44,6 +47,30 @@ export function ShortcutSection({ settings, update }: { settings: Settings; upda
         </div>
       </div>
     </>
+  );
+}
+
+/** macOS treats Control+click as a right click; warn when the shortcut holds Control. */
+function ControlKeyNote() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="overflow-hidden"
+    >
+      <div className="mt-4 flex items-start gap-3 rounded-xl border border-gold-400/25 bg-gold-400/[0.07] p-3.5">
+        <span className="mt-px grid size-6 shrink-0 place-items-center rounded-lg bg-gold-400/15 text-gold-300">
+          <Info className="size-3.5" />
+        </span>
+        <p className="text-[12.5px] leading-relaxed text-ink-200">
+          <span className="font-medium text-gold-200">Kısayolunuz ⌃ Control içeriyor.</span> macOS, Control basılıyken yapılan her tıklamayı
+          sağ tık sayar: kısayolu basılı tutarken başka uygulamalarda tıklarsanız sağ tık menüsü açılabilir. Sedjem'in kendi düğmeleri
+          bunu tanır ve normal tıklama gibi davranır. Sorun yaşarsanız ⌥ Option tabanlı bir kısayol daha rahat olur.
+        </p>
+      </div>
+    </motion.div>
   );
 }
 

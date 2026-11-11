@@ -49,6 +49,9 @@ mod mac {
                 }
             }
         })
+
+        // Only the built-in mouse callbacks are used; no delegate methods.
+        panel_event!(SedjemPanelEvents {})
     }
 
     pub fn convert<R: tauri::Runtime>(window: &tauri::WebviewWindow<R>) -> Result<(), String> {
@@ -72,7 +75,36 @@ mod mac {
         );
         // NSPanel hides itself when its app deactivates by default.
         panel.set_hides_on_deactivate(false);
+        forward_hover(window, &panel);
         Ok(())
+    }
+
+    /// The webview gets no mouseenter/mousemove while the app is inactive (the
+    /// normal case for a non-activating panel), so hover-only controls never
+    /// appeared. The panel's always-active tracking area still sees the
+    /// pointer; forward enter/exit to the panel webview as `panel:hover`.
+    fn forward_hover<R: tauri::Runtime>(
+        window: &tauri::WebviewWindow<R>,
+        panel: &tauri_nspanel::PanelHandle<R>,
+    ) {
+        use tauri::{Emitter, Manager};
+        use tauri_nspanel::objc2_app_kit::NSEvent;
+
+        let notify = |hovered: bool| {
+            let app = window.app_handle().clone();
+            move |_event: &NSEvent| {
+                if let Err(err) = app.emit_to(super::PANEL_LABEL, super::events::PANEL_HOVER, hovered) {
+                    tracing::debug!(%err, "could not emit panel hover");
+                }
+            }
+        };
+        let handler = SedjemPanelEvents::new();
+        handler.on_mouse_entered(notify(true));
+        handler.on_mouse_exited(notify(false));
+        panel.set_event_handler(Some(handler.as_ref()));
+        // AppKit holds window delegates weakly; the panel lives as long as the
+        // app, so its delegate is intentionally kept alive for the same span.
+        std::mem::forget(handler);
     }
 }
 

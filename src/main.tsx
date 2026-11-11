@@ -11,6 +11,19 @@ const SettingsApp = lazy(() => import("./settings/SettingsApp").then((m) => ({ d
 const isPanel = getCurrentWindow().label === "panel";
 document.documentElement.dataset.window = isPanel ? "panel" : "settings";
 
+/** True for elements where the native cut/copy/paste menu belongs. */
+function isEditable(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && target.closest("input, textarea, [contenteditable='true']") !== null;
+}
+
+// Native feel: no WebView "Reload / Inspect Element" menu in shipped builds.
+// Dev builds keep it for the inspector.
+if (import.meta.env.PROD) {
+  document.addEventListener("contextmenu", (event) => {
+    if (!isEditable(event.target)) event.preventDefault();
+  });
+}
+
 const container = document.getElementById("root");
 if (!container) {
   throw new Error("root element missing from index.html");

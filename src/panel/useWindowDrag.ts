@@ -2,6 +2,8 @@ import { LogicalPosition } from "@tauri-apps/api/dpi";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useCallback, useRef, type PointerEvent } from "react";
 
+import { isPrimaryPress } from "../lib/pointer";
+
 interface DragState {
   pointerX: number;
   pointerY: number;
@@ -32,7 +34,7 @@ export function useWindowDrag() {
   }, []);
 
   const onPointerDown = useCallback((event: PointerEvent<HTMLElement>) => {
-    if (event.button !== 0) return;
+    if (!isPrimaryPress(event)) return;
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.setPointerCapture(event.pointerId);

@@ -9,7 +9,9 @@ import { useToasts } from "../toasts";
 import { Button, Card, ProgressBar, Row, SectionHeader, StatusDot, Toggle } from "../ui";
 import type { UpdateSettings } from "../useSettings";
 
-function formatDate(epochMs: number): string {
+/** Empty string for a missing/invalid timestamp, so the UI never shows "Invalid Date". */
+function formatDate(epochMs: number | undefined): string {
+  if (typeof epochMs !== "number" || !Number.isFinite(epochMs)) return "";
   return new Date(epochMs).toLocaleString("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
 }
 
@@ -174,7 +176,8 @@ function StatusLine({ info }: { info: UpdateInfo | null }) {
     case "upToDate":
       return (
         <>
-          <StatusDot tone="ok" /> En güncel sürümü kullanıyorsunuz · {formatDate(info.checkedAtMs)}
+          <StatusDot tone="ok" /> En güncel sürümü kullanıyorsunuz
+          {formatDate(info.checkedAtMs) && <span className="text-ink-400">· {formatDate(info.checkedAtMs)}</span>}
         </>
       );
     case "available":

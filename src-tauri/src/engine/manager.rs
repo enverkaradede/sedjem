@@ -73,7 +73,11 @@ impl EngineConfig {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(rename_all = "camelCase", tag = "state")]
+#[serde(
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase",
+    tag = "state"
+)]
 pub enum EngineStatus {
     Loading {
         kind: EngineKind,

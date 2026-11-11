@@ -76,6 +76,7 @@ interface EventMap {
   "settings:changed": Settings;
   "update:state": UpdateInfo;
   "ui:navigate": string;
+  "panel:hover": boolean;
 }
 
 export type EventName = keyof EventMap;

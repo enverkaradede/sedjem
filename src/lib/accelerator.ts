@@ -135,6 +135,14 @@ function keyLabel(token: string): string {
   return KEY_LABELS[token] ?? token;
 }
 
+/**
+ * True when the shortcut holds the physical Control key. `CmdOrCtrl` is ⌘ on
+ * macOS, so it does not count.
+ */
+export function usesControlKey(accelerator: string): boolean {
+  return accelerator.split("+").some((part) => ["CONTROL", "CTRL"].includes(part.trim().toUpperCase()));
+}
+
 /** Splits an accelerator into display chips, e.g. `["⌥", "Space"]`. */
 export function formatAccelerator(accelerator: string): string[] {
   return accelerator

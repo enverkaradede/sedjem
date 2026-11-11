@@ -28,6 +28,8 @@ pub mod events {
     pub const UPDATE_STATE: &str = "update:state";
     /// Asks the settings window to show a section (e.g. from the tray).
     pub const NAVIGATE: &str = "ui:navigate";
+    /// Pointer entered (true) / left (false) the floating panel.
+    pub const PANEL_HOVER: &str = "panel:hover";
 }
 
 pub struct AppState {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent, type React
 
 import { api, subscribe } from "../lib/ipc";
 import type { DictationState } from "../lib/types";
+import { isPrimaryPress } from "../lib/pointer";
 import { useWindowDrag } from "./useWindowDrag";
 
 type Flash = "success" | "empty" | "error" | "busy";
@@ -46,6 +47,9 @@ export function PanelApp() {
       subscribe("dictation:no-speech", () => showFlash("empty")),
       subscribe("dictation:busy", () => showFlash("busy")),
       subscribe("dictation:error", () => showFlash("error")),
+      // The webview misses mouseenter while the app is inactive; the native
+      // tracking area reports hover instead.
+      subscribe("panel:hover", setHovered),
     ];
     return () => {
       disposers.forEach((dispose) => dispose());
@@ -55,7 +59,7 @@ export function PanelApp() {
 
   // Release is chained after press so a fast tap can never reorder over IPC.
   const onPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
-    if (event.button !== 0) return;
+    if (!isPrimaryPress(event)) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     pressed.current = true;
@@ -289,8 +293,15 @@ function Chip({ position, label, alert = false, onClick, children }: ChipProps) 
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.6 }}
       whileHover={{ scale: 1.12 }}
-      onPointerDown={(event) => event.stopPropagation()}
-      onClick={onClick}
+      // Act on press, not click: Control+click (Control-based shortcut held)
+      // never produces a `click` event on macOS.
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        if (!isPrimaryPress(event)) return;
+        event.preventDefault();
+        onClick();
+      }}
+      onContextMenu={(event) => event.preventDefault()}
     >
       {children}
     </motion.button>

@@ -199,7 +199,11 @@ pub fn list_ggml_models(state: State<'_, AppState>) -> Vec<ModelStatus> {
 }
 
 #[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase", tag = "state")]
+#[serde(
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase",
+    tag = "state"
+)]
 pub enum DownloadEvent {
     Progress {
         id: String,
@@ -336,7 +340,11 @@ pub async fn check_mlx_python(
 }
 
 #[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase", tag = "state")]
+#[serde(
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase",
+    tag = "state"
+)]
 pub enum MlxSetupEvent {
     Log { line: String },
     Done { python_path: String },
@@ -511,4 +519,19 @@ pub async fn check_for_update(app: AppHandle) -> AppResult<UpdateInfo> {
 pub async fn install_update(app: AppHandle) -> AppResult<()> {
     let state = app.state::<AppState>();
     state.updates.install(&app).await
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ipc_event_fields_are_camel_case() {
+        let done = MlxSetupEvent::Done {
+            python_path: "/x/python".into(),
+        };
+        let json = serde_json::to_value(done).unwrap();
+        assert_eq!(json["state"], "done");
+        assert_eq!(json["pythonPath"], "/x/python");
+    }
 }

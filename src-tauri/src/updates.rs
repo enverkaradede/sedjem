@@ -27,7 +27,11 @@ const CHECK_TIMEOUT: Duration = Duration::from_secs(30);
 const PROGRESS_EMIT_INTERVAL: Duration = Duration::from_millis(150);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(rename_all = "camelCase", tag = "state")]
+#[serde(
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase",
+    tag = "state"
+)]
 pub enum UpdateState {
     Idle,
     Checking,
@@ -308,6 +312,17 @@ mod tests {
         assert_eq!(json["state"], "available");
         assert_eq!(json["currentVersion"], "0.1.0");
         assert_eq!(json["version"], "0.2.0");
+    }
+
+    /// Regression: `rename_all` only renames variants; without
+    /// `rename_all_fields` the UI received `checked_at_ms` and showed
+    /// "Invalid Date".
+    #[test]
+    fn multi_word_fields_inside_variants_are_camel_case() {
+        let json = serde_json::to_value(UpdateState::UpToDate { checked_at_ms: 42 }).unwrap();
+        assert_eq!(json["state"], "upToDate");
+        assert_eq!(json["checkedAtMs"], 42);
+        assert!(json.get("checked_at_ms").is_none());
     }
 
     #[test]
